@@ -1,0 +1,48 @@
+//Prisma: ORM, transforma objetos en DB
+//(fichero que define los modelos de datos en prisma)
+
+// Para trabajar con planetScale
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model task {
+  id      Int     @id @default(autoincrement())
+  title   String  @db.VarChar(60)
+  content String  @db.VarChar(255)
+  done    Boolean
+  //el campo userId va a referenciar el id pero de user
+  user    user?   @relation(fields: [userId], references: [id])
+  userId  Int?
+  
+  // El usuario no puede tener 2 tareas con el mismo título.
+  //uso una llave unica compuesta donde paso los field que deben ser unicos en conjunto 
+  @@unique([title, userId])
+  @@map("tasks")
+}
+
+model user {
+  id        Int    @id @default(autoincrement())
+  firstName String @db.VarChar(60)
+  lastName  String @db.VarChar(255)
+  email     String @unique @db.VarChar(255)
+  password  String @db.VarChar(255)
+  tasks     task[]
+
+  @@map("users")
+}
+
+
+// npx ejecuta y descarga
+// npx prisma db push, en entorno productivo se hace con migrations
+// npx prisma generate para generar clientes
+// npx prisma format (guardar antes de aplicar)
+// npm i @prisma/client para generar el cliente prisma
+// npm i -D prisma para instalar prima como developer

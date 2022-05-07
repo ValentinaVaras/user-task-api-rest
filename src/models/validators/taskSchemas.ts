@@ -1,0 +1,15 @@
+import Joi from 'joi'
+import { CreateTaskDTO, UpdateTaskDTO } from '../dto/TaskDTO'
+//generamos los esquemas de validacion. Con Joi podemos validar emails, URI, etc.
+
+export  const createTaskSchema: Joi.ObjectSchema<CreateTaskDTO> = Joi.object().keys({
+  title: Joi.string().required(),
+  content: Joi.string().required(),
+  done: Joi.boolean().required()
+})
+
+export const updateTaskSchema: Joi.ObjectSchema<UpdateTaskDTO> = Joi.object().keys({
+  title: Joi.string(),
+  content: Joi.string(),
+  done: Joi.boolean()
+})
